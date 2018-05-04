@@ -291,6 +291,7 @@ class CRM_Gdpr_Form_CommunicationsPreferences extends CRM_Core_Form {
           curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
           curl_setopt($ch, CURLOPT_FOLLOWLOCATION ,true);
           curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
+          curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0');
           $result = curl_exec($ch);
           $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
           $code = trim($code);
