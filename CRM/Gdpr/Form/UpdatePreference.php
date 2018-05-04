@@ -246,6 +246,8 @@ class CRM_Gdpr_Form_UpdatePreference extends CRM_Core_Form {
     $errors = array();
 
     foreach ($self->groupEleNames as $groupName => $groupEleName) {
+      $channelArray = $groupChannelAray = array();
+
       //get the channel array and group channel array
       foreach ($self->channelEleNames as $channel) {
         $groupChannel = str_replace($self->containerPrefix, '', $channel);
@@ -279,6 +281,10 @@ class CRM_Gdpr_Form_UpdatePreference extends CRM_Core_Form {
       $contactPrefPrefix = 'do_not_';
       foreach ($this->commPrefSettings['channels'] as $key => $value) {
         $name  = str_replace($this->containerPrefix, '', $key);
+        // Quick hack - should use U::getCommunicationPreferenceMapper();
+        if ($name == "post") {
+           $name = "mail";
+        }
         if (!$lastAcceptance) {
           // No acceptance, and preferences are 0 then, set unknown, otherwise display yes/no
           $defaults[$key] = '';
@@ -431,7 +437,9 @@ class CRM_Gdpr_Form_UpdatePreference extends CRM_Core_Form {
     //Get the destination url from settings and redirect if we found one.
     if (!empty($this->commPrefSettings['completion_redirect'])) {
       $destinationURL = !empty($this->commPrefSettings['completion_url']) ? $this->commPrefSettings['completion_url'] : NULL;
-      $destinationURL = CRM_Utils_System::url($destinationURL, NULL, TRUE);
+      if (strpos($destinationURL, 'http') !== 0) {
+        $destinationURL = CRM_Utils_System::url($destinationURL, NULL, TRUE);
+      }
       CRM_Core_Error::debug_var('destinationURL', $destinationURL );
       CRM_Utils_System::redirect($destinationURL);
     }
